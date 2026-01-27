@@ -24,11 +24,10 @@ app.get('/api/provincias', async (req, res) => {
       id: item.id,
       name: item.name
     }))
-    console.log(provincias);
     
     return res.json({
       success: true,
-      data: provincias
+      provincias: provincias
     });
 
   } catch (error) {
@@ -41,7 +40,7 @@ app.get('/api/provincias', async (req, res) => {
 
 
 // Obtener mucicipios a partir de uan provincia
-app.get('/api/provincia/:id/municipios/', async (req, res) => {
+app.get('/api/provincia/:id/municipios', async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -69,7 +68,7 @@ app.get('/api/provincia/:id/municipios/', async (req, res) => {
 
     return res.json({
       success: true,
-      data: municipios
+      municipios: municipios
     });
 
   } catch (error) {
