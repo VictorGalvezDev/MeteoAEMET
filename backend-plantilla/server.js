@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const dataZonas = require("data.json");
+const areas = require("data.json");
 require('dotenv').config();
 
 
@@ -13,6 +13,75 @@ app.use(cors());
 app.use(express.json());
 
 
+// Obtener provincias
+app.get('/api/areas', async (req, res) => {
+  try {
+    if (!areas || areas.length == 0) {
+      throw new Error("Error: La lista de datos incorrecta")
+    }
+
+    const provincias = areas.map((item) => ({
+      id: item.id,
+      name: item.name
+    }))
+
+    return res.json({
+      success: true,
+      data: provincias
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Error al obtener los datos de las provincias',
+    });
+  }
+});
+
+
+// Obtener mucicipios a partir de uan provincia
+app.get('/api/areas/:id/municipios/', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!areas || areas.length == 0) {
+      throw new Error("Error: La lista de datos incorrecta")
+    }
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        error: 'ID incorrecto',
+        message: `Error con la ID de la provincia. data: ${id}, tipo: ${typeof id}`
+      });
+    }
+
+
+    const municipios = areas.find(item => item.id == id.toString()).municipios;
+
+    console.log(municipios);
+    
+
+    if (!municipios || municipios.length == 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Municipios no encontrados',
+        message: `No existen municipios con código ${id}`
+      });
+    }
+
+    return res.json({
+      success: true,
+      data: municipios
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Error al obtener los municipios'
+    });
+  }
+});
 
 // AEMET
 app.get('/api/aemet', async (req, res) => {
@@ -32,8 +101,8 @@ app.get('/api/aemet', async (req, res) => {
     // Si los parámetros son correctos, hacemos la petición a AEMET
     const response = await fetch(
       `https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/${tipo}/${prov}${mun}?api_key=${API_KEY}`
-    );    
-    
+    );
+
     // Posibles respuestas de AEMET
 
     if (response.status == 429) {
