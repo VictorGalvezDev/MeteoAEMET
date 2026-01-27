@@ -1,9 +1,15 @@
-import './App.css'
+import React from "react";
+import "./App.css";
+import Header from "./components/UI/Header";
+import Footer from "./components/UI/Footer";
 
 function App() {
 
   return (
-    "Ey mundo, que tal"
+    <div className="container">
+      <Header />
+      <Footer />
+    </div>
   )
 }
 

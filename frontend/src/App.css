@@ -1,5 +1,5 @@
-/* TODO: Poner aspectos generales de la pagina */
-/* #root {
-
-
-} */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
