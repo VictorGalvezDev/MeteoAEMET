@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const areas = require("data.json");
+const areas = require("./data.json");
 require('dotenv').config();
 
 
@@ -14,7 +14,7 @@ app.use(express.json());
 
 
 // Obtener provincias
-app.get('/api/areas', async (req, res) => {
+app.get('/api/provincias', async (req, res) => {
   try {
     if (!areas || areas.length == 0) {
       throw new Error("Error: La lista de datos incorrecta")
@@ -24,7 +24,8 @@ app.get('/api/areas', async (req, res) => {
       id: item.id,
       name: item.name
     }))
-
+    console.log(provincias);
+    
     return res.json({
       success: true,
       data: provincias
@@ -40,7 +41,7 @@ app.get('/api/areas', async (req, res) => {
 
 
 // Obtener mucicipios a partir de uan provincia
-app.get('/api/areas/:id/municipios/', async (req, res) => {
+app.get('/api/provincia/:id/municipios/', async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -56,11 +57,7 @@ app.get('/api/areas/:id/municipios/', async (req, res) => {
       });
     }
 
-
-    const municipios = areas.find(item => item.id == id.toString()).municipios;
-
-    console.log(municipios);
-    
+    const municipios = areas.find(item => item.id == id).municipalities;
 
     if (!municipios || municipios.length == 0) {
       return res.status(404).json({
@@ -95,6 +92,14 @@ app.get('/api/aemet', async (req, res) => {
         success: false,
         error: 'Parámetros incorrectos',
         message: 'Faltan parámetros: tipo, provincia y municipio son obligatorios'
+      });
+    }
+
+    if (tipo != "horaria" && tipo != "diaria") {
+      return res.status(400).json({
+        success: false,
+        error: 'Tipo incorrecto',
+        message: 'Tipo debe ser horaria o diaria'
       });
     }
 
