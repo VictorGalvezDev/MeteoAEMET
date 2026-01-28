@@ -4,6 +4,7 @@
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
+
 .tituloFiltro {
     margin-top: 0;
     color: #0d47a1;
@@ -16,9 +17,11 @@
     justify-content: space-between;
     gap: 30px;
 }
+
 .selectWrapper {
     width: 100%;
 }
+
 .labelSelect {
     font-weight: bold;
 }
@@ -41,6 +44,13 @@
 
 .btnFiltro:hover {
     background-color: #0d47a1;
+}
+
+.btnFiltro:disabled {
+    background-color: #cccccc;
+    transition: none;
+    box-shadow: none;
+
 }
 
 

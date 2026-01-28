@@ -9,7 +9,7 @@ const TIPOS = [
     { value: "diaria", label: "Predicción por días" }]
 
 
-const Filtro = () => {
+const Filtro = ({ onBusqueda }) => {
     const [provincias, setProvincias] = useState([]);
     const [provinciaSeleccionada, setProvinciaSeleccionada] = useState(null);
     const [municipios, setMunicipios] = useState([]);
@@ -40,7 +40,7 @@ const Filtro = () => {
                     label: item.name
                 }))
                 setProvincias(opciones);
-            } catch(error) {
+            } catch (error) {
                 setErrorData({
                     status: error.status || 500,
                     error: error.error || 'Error de conexión',
@@ -102,6 +102,17 @@ const Filtro = () => {
     };
 
 
+    const onHandleBuscar = () => {
+        if (tipoSeleccionado && provinciaSeleccionada && municipioSeleccionado) {
+            onBusqueda({
+                tipo: tipoSeleccionado.value,
+                provincia: provinciaSeleccionada.value,
+                municipio: municipioSeleccionado.value
+            });
+        }
+    }
+
+
     return (
         (isError) ? <FiltroError status={errorData.status} error={errorData.error} message={errorData.message} /> : (
             <section className="filtroBase">
@@ -144,7 +155,7 @@ const Filtro = () => {
 
                 </div>
 
-                <button className="btnFiltro">Buscar datos meteorológicos</button>
+                <button disabled={!tipoSeleccionado || !municipioSeleccionado || !provinciaSeleccionada} className="btnFiltro" onClick={onHandleBuscar}>Buscar datos meteorológicos</button>
             </section>))
 }
 
