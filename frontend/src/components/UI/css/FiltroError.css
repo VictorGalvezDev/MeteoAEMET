@@ -1,0 +1,103 @@
+.filtroError {
+    width: auto;
+    height: auto;
+    text-align: center;
+    padding: 30px;
+    align-items: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.error {
+    font-size: 1.5rem;
+    color: red;
+    font-weight: 600;
+    margin: 10px 0;
+}
+
+.mensaje {
+    font-size: 1.1rem;
+    color: #666;
+    margin-top: 5px;
+    line-height: 1.4;
+}
+
+.filtroError * {
+    margin: 0;
+}
+
+.containerError h1 {
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
+
+.containerError {
+    background-color: rgba(233, 212, 212, 0.281);
+    border-left: 5px solid red;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    padding: 25px 20px;
+}
+
+.containerInformativo {
+    background: #314559;
+    color: white;
+    padding: 25px;
+    border-radius: 25px;
+    text-align: left;
+}
+
+.infoTitulo {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: #e8f4fc;
+    text-align: center;
+}
+
+.containerInformativo > p {
+    margin-bottom: 15px;
+    line-height: 1.5;
+    font-size: 1.05rem;
+}
+
+.listaMotivos {
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.listaMotivos li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+    font-size: 1.05rem;
+}
+
+.listaMotivos li:last-child {
+    margin-bottom: 0;
+}
+
+.contacto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+    font-size: 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.iconoEmail {
+    font-size: 1.3rem;
+    color: #64b5f6;
+}
+
+.contacto span {
+    font-weight: 500;
+}
+
+.status {
+    color: red;
+    font-weight: bold;
+}
