@@ -1,0 +1,63 @@
+.contenedorCabecera {
+  background-color: #ffffff;
+  color: #333333;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-top: 30px;
+  border-bottom: 2px solid #b8b8b8;
+}
+
+.contenedorTitulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 2px solid #b8b8b8;
+}
+
+.contenedorTitulo h1 {
+  color: #0d47a1;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  padding-bottom: 1.8rem;
+}
+
+.contenedorTitulo span {
+  background-color: #e8f0fe;
+  padding: 0.5rem;
+  color: #1a73e8;
+  border-radius: 10px;
+}
+
+.contenedorLocalizacion {
+  display: flex;
+  align-items: center;
+  background-color: #f3f3f3;
+  justify-content: start;
+  margin-top: 10px;
+  padding: 20px;
+  border-left: 3px solid #0d47a1;
+  border-radius: 10px;
+}
+
+.contenedorLocalizacion h2 {
+  color: #0d47a1;
+  margin: 0;
+}
+
+.spanLocalizacion {
+  margin-left: 10px;
+}
+
+.iconoLocalizacion {
+  color: #0d47a1;
+  font-size: 1.5rem;
+}
+
+.contenedorLocalizacion:hover {
+  background-color: #ebebeb;
+}
+
+.contenedorCabecera a {
+  margin-left: 3px;
+}

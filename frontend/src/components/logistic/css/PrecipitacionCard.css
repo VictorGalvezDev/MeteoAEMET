@@ -1,0 +1,10 @@
+.contenedorPrecipitaciones {
+    display: flex;
+}
+.contendedorData {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #eae4e4;
+    color: white;
+}

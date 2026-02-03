@@ -1,0 +1,11 @@
+.tituloAcordeon {
+    display: flex;
+    font-size: 1.5rem;
+    padding: 5px;
+    align-items: center;
+    text-align: center;
+}
+
+.estiloIconoAcordeon {
+    font-size: 3rem;
+}
