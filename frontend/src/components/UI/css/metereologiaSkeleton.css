@@ -1,0 +1,161 @@
+.metereologia-skeleton {
+    width: 100%;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Estilos para la cabecera skeleton */
+.cabecera-skeleton {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.skeleton-titulo-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.skeleton-titulo-principal {
+    height: 32px;
+    width: 500px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+}
+
+.skeleton-tipo-dato {
+    height: 30px;
+    width: 120px;
+    background-color: #e8f0fe;
+    border-radius: 10px;
+}
+
+.skeleton-localizacion {
+    display: flex;
+    align-items: center;
+    background-color: #f8f8f8;
+    margin-top: 10px;
+    padding: 20px;
+    border-left: 3px solid #e0e0e0;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-icono {
+    height: 24px;
+    width: 24px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.skeleton-texto-largo {
+    height: 24px;
+    width: 300px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+}
+
+.skeleton-fecha {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.skeleton-icono-pequeno {
+    height: 16px;
+    width: 16px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.skeleton-texto-medio {
+    height: 20px;
+    width: 450px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+}
+
+.skeleton-descripcion {
+    margin-top: 1rem;
+}
+
+.skeleton-texto-muy-largo {
+    height: 20px;
+    width: 600px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+}
+
+/* Estilos para los acordeones skeleton */
+.skeleton-dia {
+    border: none;
+    margin-bottom: 20px;
+}
+
+.skeleton-legend {
+    padding: 0 10px;
+}
+
+.skeleton-fecha-dia {
+    height: 38px;
+    width: 380px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+}
+
+.skeleton-accordion {
+    margin-bottom: 8px !important;
+}
+
+.skeleton-titulo-acordeon {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.skeleton-icono-acordeon {
+    height: 30px;
+    width: 30px;
+    background-color: #d0d0d0;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.skeleton-texto-acordeon {
+    height: 24px;
+    width: 250px;
+    background-color: #d0d0d0;
+    border-radius: 4px;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .skeleton-titulo-principal {
+        width: 200px;
+    }
+    
+    .skeleton-texto-largo {
+        width: 180px;
+    }
+    
+    .skeleton-texto-muy-largo {
+        width: 250px;
+    }
+}
