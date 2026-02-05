@@ -49,11 +49,12 @@ const Metereologia = ({ dataFetch }) => {
             // }
 
             if (dataFetch) {
-                setIsLoading(true);
+                setIsLoading(false);
+                console.log(dataFetch);
+
                 console.log(dHoraria);
                 console.log(dDiaria);
-
-                setDataMetereologia(dHoraria.data[0]);
+                setDataMetereologia(dDiaria.data[0]);
             }
 
         }
@@ -73,8 +74,11 @@ const Metereologia = ({ dataFetch }) => {
                 <div>
                     <section>
                         <Cabecera
-                            data={dataMetereologia}
-                            tipo={dataFetch?.tipo || 'horaria'}
+                            nombre={dataMetereologia.nombre}
+                            provincia={dataMetereologia.provincia}
+                            elaborado={dataMetereologia.elaborado}
+                            web={dataMetereologia.origen.web}
+                            tipo={dataFetch?.tipo || 'invalido'}
                         />
                     </section>
                     <section>
@@ -108,9 +112,35 @@ const Metereologia = ({ dataFetch }) => {
                                             gap: '10px',
                                             justifyContent: 'flex-start'
                                         }}>
-                                            {item.precipitacion?.map((itemPrecipitacion, idxPrecipitacion) => {
-                                                return <PrecipitacionCard key={idxPrecipitacion} value={itemPrecipitacion.value} periodo={itemPrecipitacion.periodo} />
-                                            })}
+                                            {dataFetch && dataFetch.tipo === "horaria" ? (
+                                                item.precipitacion
+                                                    ?.filter(itemPrecipitacion =>
+                                                        itemPrecipitacion.value != undefined &&
+                                                        itemPrecipitacion.periodo != undefined
+                                                    )
+                                                    ?.map((itemPrecipitacion, idxPrecipitacion) => (
+                                                        <PrecipitacionCard
+                                                            key={idxPrecipitacion}
+                                                            value={itemPrecipitacion.value}
+                                                            periodo={itemPrecipitacion.periodo}
+                                                            tipo={dataFetch.tipo}
+                                                        />
+                                                    ))
+                                            ) : (
+                                                item.probPrecipitacion
+                                                    ?.filter(itemPrecipitacion =>
+                                                        itemPrecipitacion.value != undefined &&
+                                                        itemPrecipitacion.periodo != undefined
+                                                    )
+                                                    ?.map((itemPrecipitacion, idxPrecipitacion) => (
+                                                        <PrecipitacionCard
+                                                            key={idxPrecipitacion}
+                                                            value={itemPrecipitacion.value}
+                                                            periodo={itemPrecipitacion.periodo}
+                                                            tipo={dataFetch.tipo}
+                                                        />
+                                                    ))
+                                            )}   
                                         </AccordionDetails>
                                     </Accordion>
                                 </fieldset>

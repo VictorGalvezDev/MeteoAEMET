@@ -7,7 +7,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 const MetereologiaSkeleton = () => {
     return (
         <div className="metereologia-skeleton">
-            {/* Skeleton de la cabecera */}
+
             <section className="cabecera-skeleton">
                 <div className="skeleton-titulo-container">
                     <div className="skeleton-titulo-principal"></div>
@@ -29,7 +29,6 @@ const MetereologiaSkeleton = () => {
                 </div>
             </section>
 
-            {/* Skeleton de los acordeones (simulando varios días) */}
             <section className="acordeones-skeleton">
                 {[1, 2, 3].map((dia) => (
                     <fieldset key={dia} className="skeleton-dia">
@@ -37,7 +36,6 @@ const MetereologiaSkeleton = () => {
                             <div className="skeleton-fecha-dia"></div>
                         </legend>
                         
-                        {/* Acordeón de precipitaciones */}
                         <Accordion className="skeleton-accordion" disabled>
                             <AccordionSummary 
                                 sx={{
@@ -55,8 +53,6 @@ const MetereologiaSkeleton = () => {
                                 </div>
                             </AccordionSummary>
                         </Accordion>
-
-                        {/* Skeleton para otros acordeones futuros */}
                         {[1, 2, 3, 4].map((acordeon) => (
                             <Accordion key={acordeon} className="skeleton-accordion" disabled>
                                 <AccordionSummary 

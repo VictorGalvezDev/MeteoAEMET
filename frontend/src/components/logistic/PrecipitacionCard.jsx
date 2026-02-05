@@ -24,12 +24,23 @@ const obtenerIconoClima = (periodo, valor) => {
     };
 };
 
-const PrecipitacionCard = ({ value, periodo }) => {
+
+const formatearHoraDiaria = (hora) => {
+    return formatearHora(hora.split("-")[0]) +
+        "-" +
+        formatearHora(hora.split("-")[1])
+}
+
+
+
+const PrecipitacionCard = ({ value, periodo, tipo }) => {
     const { icono: IconoComponente, color } = obtenerIconoClima(periodo, value);
 
     return (
-        <article className="card">  
-            <h2 className="hora">{formatearHora(periodo)}</h2>
+        <article className="card">
+            <h2 className="hora">
+                {tipo === "horaria" ? formatearHora(periodo) : formatearHoraDiaria(periodo)}
+            </h2>
             <div className="icono">
                 <IconoComponente size={48} color={color} />
             </div>
