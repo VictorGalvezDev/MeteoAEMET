@@ -3,18 +3,22 @@ import "./css/Metereologia.css"
 import dHoraria from "../../../horaria.json"
 import dDiaria from "../../../diaria.json"
 import Cabecera from "./Cabecera";
-import { FaChevronDown } from 'react-icons/fa';
+import PrecipitacionCard from "./PrecipitacionCard";
+import ApiError from "../UI/ApiError";
+
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
+import { FaChevronDown } from 'react-icons/fa';
 import { WiRaindrop } from "react-icons/wi";
-import PrecipitacionCard from "./PrecipitacionCard";
 import { formatearFechaSinHora } from "../../utils/DataFormat";
 
 
 const URL_API = import.meta.env.VITE_API_URL;
 
 const Metereologia = ({ dataFetch }) => {
+    const [errorData, setErrorData] = useState({});
+    const [isErrorData, setIsErrorData] = useState(false);
     const [dataMetereologia, setDataMetereologia] = useState(null);
 
     useEffect(() => {
@@ -25,14 +29,18 @@ const Metereologia = ({ dataFetch }) => {
             //     if (dataFetch.tipo && dataFetch.provincia && dataFetch.municipio) {   
             //         const res = await fetch(`${URL_API}/api/aemet?tipo=${dataFetch.tipo}&prov=${dataFetch.provincia}&mun=${dataFetch.municipio}`);
             //         if (!res.ok) {
-            //             const errorData = res.json()
-            //             console.log("Error en la respuesta: "+res.status+ errorData.message);
+            //             setErrorData(res.json());
+            //             isErrorData(true);
             //         }
             //         const data = await res.json();
             //         console.log("Datos AEMET recibidos:", data);
             //     }
             // } catch (err) {
-            //     console.log("Error en el fetch de aemet: " + err);
+            //  setErrorData({
+            //         status: err.status || 500,
+            //         message:'Hubo un fallo en la API de aemet'
+            //     });
+            //     setIsError(true);
             // }
             if (dataFetch) {
                 console.log(dHoraria);
@@ -47,7 +55,7 @@ const Metereologia = ({ dataFetch }) => {
 
 
     return (
-        (dataMetereologia &&
+        (dataMetereologia && !isErrorData) ?
             <div>
                 <section>
                     <Cabecera
@@ -95,7 +103,8 @@ const Metereologia = ({ dataFetch }) => {
                         );
                     })}
                 </section>
-            </div>)
+            </div> :
+            (isErrorData && <ApiError errorData={errorData} />)
     )
 }
 

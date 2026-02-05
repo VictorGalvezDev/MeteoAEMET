@@ -123,7 +123,7 @@ app.get('/api/aemet', async (req, res) => {
       return res.status(404).json({
         success: false,
         error: 'Municipio no encontrado',
-        message: `Código ${prov}${mun} no existe en AEMET`
+        message: `El código de provincia ${prov} o el cófigo de municipìo ${mun} no existe en AEMET`
       });
     }
 
@@ -132,7 +132,7 @@ app.get('/api/aemet', async (req, res) => {
       return res.status(403).json({
         success: false,
         error: 'Acceso no autorizado',
-        message: 'No tienes permisos o no funciona correctamente la API KEY'
+        message: 'No tienes permisos o no funciona correctamente la API KEY de AEMET'
       });
     }
 
