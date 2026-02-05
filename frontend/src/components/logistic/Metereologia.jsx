@@ -9,6 +9,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import { WiRaindrop } from "react-icons/wi";
 import PrecipitacionCard from "./PrecipitacionCard";
+import { formatearFechaSinHora } from "../../utils/DataFormat";
 
 
 const URL_API = import.meta.env.VITE_API_URL;
@@ -36,7 +37,7 @@ const Metereologia = ({ dataFetch }) => {
             if (dataFetch) {
                 console.log(dHoraria);
                 console.log(dDiaria);
-                
+
                 setDataMetereologia(dHoraria.data[0]);
             }
 
@@ -55,34 +56,44 @@ const Metereologia = ({ dataFetch }) => {
                     />
                 </section>
                 <section>
-                    <Accordion>
-                        <AccordionSummary sx={{
-                            backgroundColor: '#0d47a1',
-                            borderRadius: '10px',
-                            marginTop: '5px',
-                            color: '#ffffff',
-                            '&:hover': {
-                                backgroundColor: '#1565c0',
-                            },
-                            '& .MuiAccordionSummary-expandIconWrapper': {
-                                color: '#ffffff',
-                            }
-                        }}
-                            expandIcon={<FaChevronDown />}
-                            aria-controls="panel1-content"
-                        >
-                            <div className="tituloAcordeon">
-                                <WiRaindrop className="estiloIconoAcordeon"/>Precipitaciones
-                            </div>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            {dHoraria.data[0].prediccion.dia[0].precipitacion.map((item, idx) => {
-                                return <PrecipitacionCard key={idx} value={item.value} periodo= {item.periodo}/>
-                            })}
-
-
-                        </AccordionDetails>
-                    </Accordion>
+                    {dataMetereologia.prediccion.dia.map((item, idx) => {
+                        return (
+                            <fieldset key={idx}>
+                                <legend><h1>{formatearFechaSinHora(item.fecha)}</h1></legend>
+                                <Accordion>
+                                    <AccordionSummary sx={{
+                                        backgroundColor: '#0d47a1',
+                                        borderRadius: '10px',
+                                        marginTop: '5px',
+                                        color: '#ffffff',
+                                        '&:hover': {
+                                            backgroundColor: '#1565c0',
+                                        },
+                                        '& .MuiAccordionSummary-expandIconWrapper': {
+                                            color: '#ffffff',
+                                        }
+                                    }}
+                                        expandIcon={<FaChevronDown />}
+                                        aria-controls="panel1-content"
+                                    >
+                                        <div className="tituloAcordeon">
+                                            <WiRaindrop className="estiloIconoAcordeon" />Precipitaciones
+                                        </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails sx={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        gap: '10px',
+                                        justifyContent: 'flex-start'
+                                    }}>
+                                        {item.precipitacion?.map((itemPrecipitacion, idxPrecipitacion) => {
+                                            return <PrecipitacionCard key={idxPrecipitacion} value={itemPrecipitacion.value} periodo={itemPrecipitacion.periodo} />
+                                        })}
+                                    </AccordionDetails>
+                                </Accordion>
+                            </fieldset>
+                        );
+                    })}
                 </section>
             </div>)
     )

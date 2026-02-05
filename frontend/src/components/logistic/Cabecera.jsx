@@ -2,27 +2,9 @@ import React from "react";
 import "./css/Cabecera.css";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaCalendarAlt } from "react-icons/fa";
+import { formatearFecha } from "../../utils/DataFormat";
 
 const Cabecera = ({ data, tipo }) => {
-  const formatDate = (dateString) => {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString('es-ES', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    } catch {
-      return "Fecha no disponible";
-    }
-
-  };
-
-
-
   return (
     <div className="contenedorCabecera">
       <div className="contenedorTitulo">
@@ -38,7 +20,7 @@ const Cabecera = ({ data, tipo }) => {
         </h2>
       </div>
       <h3>
-        <FaCalendarAlt /> Actualizado: {formatDate(data.elaborado)}
+        <FaCalendarAlt /> Actualizado: {formatearFecha(data.elaborado)}
       </h3>
 
       <p>

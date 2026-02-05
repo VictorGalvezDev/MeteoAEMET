@@ -1,6 +1,3 @@
-.contenedorPrecipitaciones {
-    display: flex;
-}
 .contendedorData {
     display: flex;
     flex-direction: column;

@@ -9,3 +9,25 @@
 .estiloIconoAcordeon {
     font-size: 3rem;
 }
+
+.card {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-left: solid 3px #0d47a1;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 5px;
+    justify-content: center;
+    text-align: center;
+    min-width: 115px; 
+    max-width: 120px; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+
