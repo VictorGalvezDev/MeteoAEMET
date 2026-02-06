@@ -5,6 +5,7 @@ import dDiaria from "../../../diaria.json"
 import Cabecera from "./Cabecera";
 import PrecipitacionCard from "./PrecipitacionCard";
 import ApiError from "../UI/ApiError";
+import ProbPrecipitacionCard from "./ProbPrecipitacionCard";
 import MetereologiaSkeleton from "../UI/metereologiaSkeleton";
 
 import Accordion from '@mui/material/Accordion';
@@ -54,7 +55,7 @@ const Metereologia = ({ dataFetch }) => {
 
                 console.log(dHoraria);
                 console.log(dDiaria);
-                setDataMetereologia(dDiaria.data[0]);
+                setDataMetereologia(dHoraria.data[0]);
             }
 
         }
@@ -83,6 +84,26 @@ const Metereologia = ({ dataFetch }) => {
                     </section>
                     <section>
                         {dataMetereologia.prediccion.dia.map((item, idx) => {
+                            const tieneDatosPrecipitacion = dataFetch?.tipo === "horaria"
+                                ? item.precipitacion?.some(precip =>
+                                    precip.value != undefined && precip.periodo != undefined
+                                )
+                                : item.probPrecipitacion?.some(precip =>
+                                    precip.value != undefined && precip.periodo != undefined
+                                );
+
+                            const tieneProbabilidadPrecipitacionHoraria = dataFetch?.tipo == "horaria"
+                                ? item.probPrecipitacion?.some(precip =>
+
+                                    precip.value != undefined && precip.periodo != undefined
+                                ) : false;
+                            const tieneProbabilidadTormenta = dataFetch?.tipo == "horaria"
+                                ? item.probTormenta?.some(precip =>
+                                    precip.value != undefined && precip.periodo != undefined
+                                ) : false;
+
+                            if (!tieneDatosPrecipitacion) return null;
+
                             return (
                                 <fieldset key={idx}>
                                     <legend><h1>{formatearFechaSinHora(item.fecha)}</h1></legend>
@@ -113,34 +134,68 @@ const Metereologia = ({ dataFetch }) => {
                                             justifyContent: 'flex-start'
                                         }}>
                                             {dataFetch && dataFetch.tipo === "horaria" ? (
-                                                item.precipitacion
-                                                    ?.filter(itemPrecipitacion =>
-                                                        itemPrecipitacion.value != undefined &&
-                                                        itemPrecipitacion.periodo != undefined
-                                                    )
-                                                    ?.map((itemPrecipitacion, idxPrecipitacion) => (
-                                                        <PrecipitacionCard
-                                                            key={idxPrecipitacion}
-                                                            value={itemPrecipitacion.value}
-                                                            periodo={itemPrecipitacion.periodo}
-                                                            tipo={dataFetch.tipo}
-                                                        />
-                                                    ))
+                                                <>
+                                                    {item.precipitacion
+                                                        // ?.filter(itemPrecipitacion =>
+                                                        //     itemPrecipitacion.value != undefined &&
+                                                        //     itemPrecipitacion.periodo != undefined
+                                                        // )
+                                                        ?.map((itemPrecipitacion, idxPrecipitacion) => (
+                                                            <PrecipitacionCard
+                                                                key={idxPrecipitacion}
+                                                                value={itemPrecipitacion.value}
+                                                                periodo={itemPrecipitacion.periodo}
+                                                                tipo={dataFetch.tipo}
+                                                                tipoCard={"precipitacion"}
+                                                            />
+                                                        ))}
+
+                                                    {tieneProbabilidadPrecipitacionHoraria ? (
+                                                        <fieldset>
+                                                            <legend>Probabilidad de Precipitación</legend>
+                                                            {item.probPrecipitacion.map((itemPrecipitacion, idxPrecipitacion) => (
+                                                                <ProbPrecipitacionCard
+                                                                    key={idxPrecipitacion}
+                                                                    value={itemPrecipitacion.value}
+                                                                    periodo={itemPrecipitacion.periodo}
+                                                                    tipo={dataFetch.tipo}
+                                                                    tipoCard={"prob"}
+                                                                />
+                                                            ))}
+                                                        </fieldset>
+                                                    ) : null}
+
+                                                    {tieneProbabilidadTormenta ? (
+                                                        <fieldset>
+                                                            <legend>Probabilidad de Tormenta</legend>
+                                                            {item.probPrecipitacion.map((itemPrecipitacion, idxPrecipitacion) => (
+                                                                <ProbPrecipitacionCard
+                                                                    key={idxPrecipitacion}
+                                                                    value={itemPrecipitacion.value}
+                                                                    periodo={itemPrecipitacion.periodo}
+                                                                    tipo={dataFetch.tipo}
+                                                                    tipoCard={"tormenta"}
+                                                                />
+                                                            ))}
+                                                        </fieldset>
+                                                    ) : null}
+                                                </>
                                             ) : (
                                                 item.probPrecipitacion
-                                                    ?.filter(itemPrecipitacion =>
-                                                        itemPrecipitacion.value != undefined &&
-                                                        itemPrecipitacion.periodo != undefined
-                                                    )
+                                                    // ?.filter(itemPrecipitacion =>
+                                                    // itemPrecipitacion.value != undefined &&
+                                                    // itemPrecipitacion.periodo != undefined
+                                                    // )
+
                                                     ?.map((itemPrecipitacion, idxPrecipitacion) => (
-                                                        <PrecipitacionCard
+                                                        <ProbPrecipitacionCard
                                                             key={idxPrecipitacion}
                                                             value={itemPrecipitacion.value}
                                                             periodo={itemPrecipitacion.periodo}
                                                             tipo={dataFetch.tipo}
                                                         />
                                                     ))
-                                            )}   
+                                            )}
                                         </AccordionDetails>
                                     </Accordion>
                                 </fieldset>

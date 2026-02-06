@@ -1,6 +1,6 @@
 import React from "react";
 import "./css/PrecipitacionCard.css";
-import { formatearHora } from "../../utils/DataFormat";
+import { formatearHora, formatearHoraDiaria } from "../../utils/DataFormat";
 import { WiRain, WiDayRain, WiNightAltRain, WiDaySunny, WiNightClear } from "weather-icons-react";
 
 // Función auxiliar para obtener el icono
@@ -24,16 +24,8 @@ const obtenerIconoClima = (periodo, valor) => {
     };
 };
 
+const PrecipitacionCard = ({ value, periodo, tipo, tipoCard="" }) => {
 
-const formatearHoraDiaria = (hora) => {
-    return formatearHora(hora.split("-")[0]) +
-        "-" +
-        formatearHora(hora.split("-")[1])
-}
-
-
-
-const PrecipitacionCard = ({ value, periodo, tipo }) => {
     const { icono: IconoComponente, color } = obtenerIconoClima(periodo, value);
 
     return (
@@ -44,9 +36,9 @@ const PrecipitacionCard = ({ value, periodo, tipo }) => {
             <div className="icono">
                 <IconoComponente size={48} color={color} />
             </div>
-            <p className="valor">{value}%</p>
+            <p className="valor">{value}mm</p>
         </article>
     );
-};
+}
 
-export default PrecipitacionCard;
+export default PrecipitacionCard
