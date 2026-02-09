@@ -5,6 +5,7 @@ import dDiaria from "../../../diaria.json"
 import Cabecera from "./Cabecera";
 import PrecipitacionCard from "./PrecipitacionCard";
 import EstadoCieloCard from "./EstadoCieloCard";
+import TemperaturaCard from "./TemperaturaCard";
 import ApiError from "../UI/ApiError";
 import MetereologiaSkeleton from "../UI/metereologiaSkeleton";
 
@@ -42,12 +43,19 @@ const comprobarExistenciaDatos = (data, tipo) => {
         ec.periodo != undefined && ec.periodo != "" &&
         ec.descripcion != undefined && ec.descripcion != ""
     )
+    const tieneTemperatura = tipo == "horaria" ? data.temperatura?.some(temp =>
+        temp.value != undefined && temp.value != "" &&
+        temp.periodo != undefined && temp.periodo != ""
+    ) : data.temperatura.dato.length > 0 ? data.temperatura.dato.some(temp =>
+        temp.value != undefined && temp.value != "" &&
+        temp.hora != undefined && temp.hora != "") : false
 
     return {
         tieneDatosPrecipitacion: tieneDatosPrecipitacion,
         tieneProbPrecipitacionHoraria: tieneProbPrecipitacionHoraria,
         tieneProbTormenta: tieneProbTormenta,
-        tieneEstadoCielo: tieneEstadoCielo
+        tieneEstadoCielo: tieneEstadoCielo,
+        tieneTemperatura: tieneTemperatura
     }
 }
 
@@ -126,7 +134,8 @@ const Metereologia = ({ dataFetch }) => {
                                 tieneDatosPrecipitacion,
                                 tieneProbPrecipitacionHoraria,
                                 tieneProbTormenta,
-                                tieneEstadoCielo
+                                tieneEstadoCielo,
+                                tieneTemperatura
                             } = comprobarExistenciaDatos(item, dataFetch?.tipo);
 
 
@@ -223,52 +232,111 @@ const Metereologia = ({ dataFetch }) => {
                                                 </div>)}
                                         </AccordionDetails>
                                     </Accordion>
-                                      {/* estadoCielo */}
-                                        {tieneEstadoCielo ? (
-                                            <Accordion>
-                                                <AccordionSummary sx={{
-                                                    backgroundColor: '#0d47a1',
-                                                    borderRadius: '10px',
-                                                    marginTop: '5px',
+                                    {/* estadoCielo */}
+                                    {tieneEstadoCielo ? (
+                                        <Accordion>
+                                            <AccordionSummary sx={{
+                                                backgroundColor: '#0d47a1',
+                                                borderRadius: '10px',
+                                                marginTop: '5px',
+                                                color: '#ffffff',
+                                                '&:hover': {
+                                                    backgroundColor: '#1565c0',
+                                                },
+                                                '& .MuiAccordionSummary-expandIconWrapper': {
                                                     color: '#ffffff',
-                                                    '&:hover': {
-                                                        backgroundColor: '#1565c0',
-                                                    },
-                                                    '& .MuiAccordionSummary-expandIconWrapper': {
-                                                        color: '#ffffff',
-                                                        fontSize: '1.5rem',
-                                                    }
-                                                }}
-                                                    expandIcon={<FaChevronDown />}
-                                                    aria-controls="panel1-content"
-                                                >
-                                                    <div className="tituloAcordeon">
-                                                        <WiRaindrop className="estiloIconoAcordeon" />Estado Cielo
-                                                    </div>
-                                                </AccordionSummary>
-                                                <AccordionDetails sx={{
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    flexWrap: 'wrap',
-                                                    gap: '10px',
-                                                    justifyContent: 'flex-start'
-                                                }}>
-                                                    <div className="contenedorCards">
-                                                        {item.estadoCielo?.map((itemEstadoCielo, idxEstadoCielo) => (
-                                                            <EstadoCieloCard
-                                                                key={idxEstadoCielo}
-                                                                value={itemEstadoCielo.value}
-                                                                periodo={itemEstadoCielo.periodo}
-                                                                descripcion={itemEstadoCielo.descripcion}
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                </AccordionDetails>
-                                            </Accordion>
-                                        ) : ""}
-                                </fieldset>
+                                                    fontSize: '1.5rem',
+                                                }
+                                            }}
+                                                expandIcon={<FaChevronDown />}
+                                                aria-controls="panel1-content"
+                                            >
+                                                <div className="tituloAcordeon">
+                                                    <WiRaindrop className="estiloIconoAcordeon" />Estado Cielo
+                                                </div>
+                                            </AccordionSummary>
+                                            <AccordionDetails sx={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                flexWrap: 'wrap',
+                                                gap: '10px',
+                                                justifyContent: 'flex-start'
+                                            }}>
+                                                <div className="contenedorCards">
+                                                    {item.estadoCielo?.map((itemEstadoCielo, idxEstadoCielo) => (
+                                                        <EstadoCieloCard
+                                                            key={idxEstadoCielo}
+                                                            value={itemEstadoCielo.value}
+                                                            periodo={itemEstadoCielo.periodo}
+                                                            descripcion={itemEstadoCielo.descripcion}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </AccordionDetails>
+                                        </Accordion>
+                                    ) : ""}
 
-                                
+                                    {/* temperatura */}
+
+                                    {tieneTemperatura ?
+                                        (<Accordion>
+                                            <AccordionSummary sx={{
+                                                backgroundColor: '#0d47a1',
+                                                borderRadius: '10px',
+                                                marginTop: '5px',
+                                                color: '#ffffff',
+                                                '&:hover': {
+                                                    backgroundColor: '#1565c0',
+                                                },
+                                                '& .MuiAccordionSummary-expandIconWrapper': {
+                                                    color: '#ffffff',
+                                                    fontSize: '1.5rem',
+                                                }
+                                            }}
+                                                expandIcon={<FaChevronDown />}
+                                                aria-controls="panel1-content"
+                                            >
+                                                <div className="tituloAcordeon">
+                                                    <WiRaindrop className="estiloIconoAcordeon" />Temperatura
+                                                </div>
+                                            </AccordionSummary>
+                                            <AccordionDetails sx={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                flexWrap: 'wrap',
+                                                gap: '10px',
+                                                justifyContent: 'flex-start'
+                                            }}>
+                                                <div className="contenedorCards">
+                                                    {dataFetch && dataFetch.tipo == "horaria" ? item.temperatura?.map((itemTemepratura, idxTemperatura) => (
+                                                        <TemperaturaCard
+                                                            key={idxTemperatura}
+                                                            value={itemTemepratura.value}
+                                                            periodo={itemTemepratura.periodo}
+                                                        />
+                                                    )):item.temperatura?.dato?.map((itemTemperatura, idxTemperatura) => (
+                                                        <TemperaturaCard
+                                                            key={idxTemperatura}
+                                                            value={itemTemperatura.value}
+                                                            periodo={itemTemperatura.hora}
+
+                                                        />
+                                                    ))}
+
+
+                                                    
+                                                    {/* {item.estadoCielo?.map((itemEstadoCielo, idxEstadoCielo) => (
+                                                        <EstadoCieloCard
+                                                            key={idxEstadoCielo}
+                                                            value={itemEstadoCielo.value}
+                                                            periodo={itemEstadoCielo.periodo}
+                                                            descripcion={itemEstadoCielo.descripcion}
+                                                        />
+                                                    ))} */}
+                                                </div>
+                                            </AccordionDetails>
+                                        </Accordion>) : ""}
+                                </fieldset>
                             );
                         })}
                     </section>

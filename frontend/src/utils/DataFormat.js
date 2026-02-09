@@ -33,7 +33,8 @@ export const formatearHoraDosCuatroDigitos = (periodo) => {
     try {
         if (!periodo) return "Hora no disponible";
         
-        const periodoStr = periodo.toString();
+        const periodoStr = periodo.toString().padStart(2,"0");
+
         
         // periodo con guion
         if (periodoStr.includes('-')) {
