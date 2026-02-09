@@ -4,6 +4,7 @@ import dHoraria from "../../../horaria.json"
 import dDiaria from "../../../diaria.json"
 import Cabecera from "./Cabecera";
 import PrecipitacionCard from "./PrecipitacionCard";
+import EstadoCieloCard from "./EstadoCieloCard";
 import ApiError from "../UI/ApiError";
 import MetereologiaSkeleton from "../UI/metereologiaSkeleton";
 
@@ -36,11 +37,17 @@ const comprobarExistenciaDatos = (data, tipo) => {
         ? data.probTormenta?.some(precip =>
             precip.value != undefined && precip.periodo != undefined
         ) : false;
+    const tieneEstadoCielo = data.estadoCielo?.some(ec =>
+        ec.value != undefined && ec.value != "" &&
+        ec.periodo != undefined && ec.periodo != "" &&
+        ec.descripcion != undefined && ec.descripcion != ""
+    )
 
     return {
         tieneDatosPrecipitacion: tieneDatosPrecipitacion,
         tieneProbPrecipitacionHoraria: tieneProbPrecipitacionHoraria,
-        tieneProbTormenta: tieneProbTormenta
+        tieneProbTormenta: tieneProbTormenta,
+        tieneEstadoCielo: tieneEstadoCielo
     }
 }
 
@@ -82,8 +89,8 @@ const Metereologia = ({ dataFetch }) => {
                 setIsLoading(false);
                 console.log(dataFetch);
 
-                console.log(dHoraria);
-                console.log(dDiaria);
+                console.log("horaria: ", dHoraria);
+                console.log("diaria: ", dDiaria);
                 setDataMetereologia(dHoraria.data[0]);
             }
 
@@ -118,7 +125,8 @@ const Metereologia = ({ dataFetch }) => {
                             const {
                                 tieneDatosPrecipitacion,
                                 tieneProbPrecipitacionHoraria,
-                                tieneProbTormenta
+                                tieneProbTormenta,
+                                tieneEstadoCielo
                             } = comprobarExistenciaDatos(item, dataFetch?.tipo);
 
 
@@ -215,11 +223,56 @@ const Metereologia = ({ dataFetch }) => {
                                                 </div>)}
                                         </AccordionDetails>
                                     </Accordion>
+                                      {/* estadoCielo */}
+                                        {tieneEstadoCielo ? (
+                                            <Accordion>
+                                                <AccordionSummary sx={{
+                                                    backgroundColor: '#0d47a1',
+                                                    borderRadius: '10px',
+                                                    marginTop: '5px',
+                                                    color: '#ffffff',
+                                                    '&:hover': {
+                                                        backgroundColor: '#1565c0',
+                                                    },
+                                                    '& .MuiAccordionSummary-expandIconWrapper': {
+                                                        color: '#ffffff',
+                                                        fontSize: '1.5rem',
+                                                    }
+                                                }}
+                                                    expandIcon={<FaChevronDown />}
+                                                    aria-controls="panel1-content"
+                                                >
+                                                    <div className="tituloAcordeon">
+                                                        <WiRaindrop className="estiloIconoAcordeon" />Estado Cielo
+                                                    </div>
+                                                </AccordionSummary>
+                                                <AccordionDetails sx={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    flexWrap: 'wrap',
+                                                    gap: '10px',
+                                                    justifyContent: 'flex-start'
+                                                }}>
+                                                    <div className="contenedorCards">
+                                                        {item.estadoCielo?.map((itemEstadoCielo, idxEstadoCielo) => (
+                                                            <EstadoCieloCard
+                                                                key={idxEstadoCielo}
+                                                                value={itemEstadoCielo.value}
+                                                                periodo={itemEstadoCielo.periodo}
+                                                                descripcion={itemEstadoCielo.descripcion}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </AccordionDetails>
+                                            </Accordion>
+                                        ) : ""}
                                 </fieldset>
+
+                                
                             );
                         })}
                     </section>
-                </div>
+                </div >
             ) : ""}
         </>
     )
