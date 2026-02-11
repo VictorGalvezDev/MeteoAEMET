@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import "./css/Metereologia.css"
-import dHoraria from "../../../horaria.json"
-import dDiaria from "../../../diaria.json"
+// import dHoraria from "../../../horaria.json"
+// import dDiaria from "../../../diaria.json"
 import Cabecera from "./Cabecera";
 import PrecipitacionCard from "./PrecipitacionCard";
 import EstadoCieloCard from "./EstadoCieloCard";
@@ -22,6 +22,7 @@ import { formatearFechaSinHora } from "../../utils/DataFormat";
 const URL_API = import.meta.env.VITE_API_URL;
 
 const comprobarExistenciaDatos = (data, tipo) => {
+
 
     const tieneDatosPrecipitacion = tipo == "horaria"
         ? data.precipitacion?.some(precip =>
@@ -56,7 +57,7 @@ const comprobarExistenciaDatos = (data, tipo) => {
         viento.direccion[0] != undefined && viento.direccion[0] != "" &&
         viento.velocidad[0] != undefined && viento.velocidad[0] != "" &&
         viento.periodo != undefined && viento.periodo != ""
-    ) : data.viento.some(viento =>
+    ) : data.viento?.some(viento =>
         viento.direccion != undefined && viento.direccion != "" &&
         viento.velocidad != undefined && viento.velocidad != "" &&
         viento.periodo != undefined && viento.periodo != "");
@@ -85,31 +86,45 @@ const Metereologia = ({ dataFetch }) => {
     const [dataMetereologia, setDataMetereologia] = useState(null);
     const [isErrorData, setIsErrorData] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [validaciones, setValidaciones] = useState({});
 
     // UseEffect para desarrollo
-    useEffect(() => {
-        const aemetFetch = async () => {
-            if (!dataFetch) return;
-            setIsLoading(true);
+    // useEffect(() => {
+    //     const aemetFetch = async () => {
+    //         if (!dataFetch) return;
+    //         setValidaciones({});
+    //         setDataMetereologia(null);
+    //         setIsErrorData(false);
+    //         setIsLoading(true);
 
-            try {
-                if (dataFetch.tipo === "horaria") {
-                    setDataMetereologia(dHoraria.data[0]);
-                } else {
-                    setDataMetereologia(dDiaria.data[0]);
-                }
-            } catch (err) {
-                setErrorData({
-                    status: err.status || 500,
-                    message: 'Hubo un fallo en la API de aemet'
-                });
-                setIsErrorData(true);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        aemetFetch();
-    }, [dataFetch]); 
+    //         try {
+    //             if (dataFetch.tipo === "horaria") {
+    //                 const validacionesPorDia = {};
+    //                 dHoraria.data[0].prediccion.dia.forEach((item, index) => {
+    //                     validacionesPorDia[index] = comprobarExistenciaDatos(item, dataFetch.tipo);
+    //                 });
+    //                 setValidaciones(validacionesPorDia);
+    //                 setDataMetereologia(dHoraria.data[0]);
+    //             } else {
+    //                 const validacionesPorDia = {};
+    //                 dDiaria.data[0].prediccion.dia.forEach((item, index) => {
+    //                     validacionesPorDia[index] = comprobarExistenciaDatos(item, dataFetch.tipo);
+    //                 });
+    //                 setValidaciones(validacionesPorDia);
+    //                 setDataMetereologia(dDiaria.data[0]);
+    //             }
+    //         } catch (err) {
+    //             setErrorData({
+    //                 status: err.status || 500,
+    //                 message: 'Hubo un fallo en la API de aemet'
+    //             });
+    //             setIsErrorData(true);
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     }
+    //     aemetFetch();
+    // }, [dataFetch]);
 
 
 
@@ -118,6 +133,8 @@ const Metereologia = ({ dataFetch }) => {
     //     const aemetFetch = async () => {
     //         try {
     //         setIsLoading(true);
+    //         setIsErrorData(false)
+    //         setDataMetereologia(null)
     //             if (dataFetch.tipo && dataFetch.provincia && dataFetch.municipio) {   
     //                 const res = await fetch(`${URL_API}/api/aemet?tipo=${dataFetch.tipo}&prov=${dataFetch.provincia}&mun=${dataFetch.municipio}`);
     //                 if (!res.ok) {
@@ -126,19 +143,72 @@ const Metereologia = ({ dataFetch }) => {
     //                 }
     //                 const data = await res.json();
     //                 console.log("Datos AEMET recibidos:", data);
+    //                 const validacionesPorDia = {};
+    //                 data.data[0].prediccion.dia.forEach((item, index) => {
+    //                     validacionesPorDia[index] = comprobarExistenciaDatos(item, dataFetch.tipo);
+    //                 });
     //             }
     //         } catch (err) {
     //          setErrorData({
     //                 status: err.status || 500,
     //                 message:'Hubo un fallo en la API de aemet'
     //             });
-    //             setIsError(true);
+    //             setIsErrorData(true);
     //         } finally {
     //             setIsLoading(false)    
     //         }
     //     }
     //     aemetFetch();
     // }, [dataFetch]);
+
+    useEffect(() => {
+        const aemetFetch = async () => {
+            try {
+                setIsLoading(true);
+                setIsErrorData(false);
+                setDataMetereologia(null);
+                setValidaciones({});
+
+                if (dataFetch?.tipo && dataFetch?.provincia && dataFetch?.municipio) {
+                    const res = await fetch(`${URL_API}/api/aemet?tipo=${dataFetch.tipo}&prov=${dataFetch.provincia}&mun=${dataFetch.municipio}`);
+
+                    if (!res.ok) {
+                        const errorData = await res.json();
+                        setErrorData(errorData);
+                        setIsErrorData(true);
+                        return;
+                    }
+
+                    const data = await res.json();
+                    console.log("Datos AEMET recibidos:", data);
+
+                    if (data?.data?.[0]?.prediccion?.dia) {
+                        const validacionesPorDia = {};
+
+                        data.data[0].prediccion.dia.forEach((item) => {
+                            validacionesPorDia[item.fecha] = comprobarExistenciaDatos(item, dataFetch.tipo);
+                        });
+
+                        setValidaciones(validacionesPorDia);
+                        setDataMetereologia(data.data[0]);
+                    } else {
+                        throw new Error("Estructura de datos incorrecta");
+                    }
+                }
+            } catch (err) {
+                console.error("Error en fetch:", err);
+                setErrorData({
+                    status: err.status || 500,
+                    message: err.message || 'Hubo un fallo en la API de aemet'
+                });
+                setIsErrorData(true);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        aemetFetch();
+    }, [dataFetch]);
 
 
 
@@ -162,24 +232,36 @@ const Metereologia = ({ dataFetch }) => {
                         />
                     </section>
                     <section>
-                        {dataMetereologia.prediccion.dia.map((item, idx) => {
+                        {dataMetereologia.prediccion.dia.map(item => {
+                            const validacion = validaciones[item.fecha] || {};
 
-                            const {
-                                tieneDatosPrecipitacion,
-                                tieneProbPrecipitacionHoraria,
-                                tieneProbTormenta,
-                                tieneEstadoCielo,
-                                tieneTemperatura,
-                                tieneViento,
-                                tieneHumedad
-                            } = comprobarExistenciaDatos(item, dataFetch?.tipo);
+
+                            const tieneAlgunDato = Object.values(validacion).some(v => v === true);
+                            if (!tieneAlgunDato) {
+                                return null;
+                            }
+
+
+
+                            // if (!tieneAlgunDato) {
+                            //     return "";
+                            // }
+                            // const {
+                            //     tieneDatosPrecipitacion,
+                            //     tieneProbPrecipitacionHoraria,
+                            //     tieneProbTormenta,
+                            //     tieneEstadoCielo,
+                            //     tieneTemperatura,
+                            //     tieneViento,
+                            //     tieneHumedad
+                            // } = comprobarExistenciaDatos(item, dataFetch?.tipo);
 
                             return (
-                                <fieldset key={`${idx}-${dataFetch?.tipo}`}>
+                                <fieldset key={item.fecha}>
                                     <legend><h1>{formatearFechaSinHora(item.fecha)}</h1></legend>
 
                                     {/* Precipitacion */}
-                                    {tieneDatosPrecipitacion &&
+                                    {validacion.tieneDatosPrecipitacion &&
                                         (<Accordion>
                                             <AccordionSummary sx={{
                                                 backgroundColor: '#0d47a1',
@@ -226,7 +308,7 @@ const Metereologia = ({ dataFetch }) => {
                                                                 )}
                                                         </div>
 
-                                                        {tieneProbPrecipitacionHoraria && (
+                                                        {validacion.tieneProbPrecipitacionHoraria && (
                                                             <fieldset className="contenedorCards">
                                                                 <legend className="tituloFiledCards">Probabilidad de Precipitación</legend>
                                                                 {item.probPrecipitacion.filter(filPrecip =>
@@ -245,7 +327,7 @@ const Metereologia = ({ dataFetch }) => {
                                                             </fieldset>
                                                         )}
 
-                                                        {tieneProbTormenta && (
+                                                        {validacion.tieneProbTormenta && (
                                                             <fieldset className="contenedorCards">
                                                                 <legend className="tituloFiledCards">Probabilidad de Tormenta</legend>
                                                                 {item.probTormenta.filter(filPrecip =>
@@ -286,7 +368,7 @@ const Metereologia = ({ dataFetch }) => {
 
 
                                     {/* estadoCielo */}
-                                    {tieneEstadoCielo && (
+                                    {validacion.tieneEstadoCielo && (
                                         <Accordion>
                                             <AccordionSummary sx={{
                                                 backgroundColor: '#0d47a1',
@@ -337,7 +419,7 @@ const Metereologia = ({ dataFetch }) => {
                                     )}
 
                                     {/* temperatura */}
-                                    {tieneTemperatura &&
+                                    {validacion.tieneTemperatura &&
                                         (<Accordion>
                                             <AccordionSummary sx={{
                                                 backgroundColor: '#0d47a1',
@@ -398,7 +480,7 @@ const Metereologia = ({ dataFetch }) => {
 
 
                                     {/* viento */}
-                                    {tieneViento &&
+                                    {validacion.tieneViento &&
                                         (<Accordion>
                                             <AccordionSummary sx={{
                                                 backgroundColor: '#0d47a1',
@@ -462,7 +544,7 @@ const Metereologia = ({ dataFetch }) => {
                                         </Accordion>)}
 
                                     {/* Humedad */}
-                                    {tieneHumedad && (<Accordion>
+                                    {validacion.tieneHumedad && (<Accordion>
                                         <AccordionSummary sx={{
                                             backgroundColor: '#0d47a1',
                                             borderRadius: '10px',
