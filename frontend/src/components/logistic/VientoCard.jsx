@@ -14,13 +14,9 @@ const iconosViento = {
 };
 
 const VientoCard = ({direccion, periodo, velocidad}) => {
-    console.log(direccion);
-    
-    // Obtener el componente del icono (o null si no existe)
     const IconoComponente = direccion 
         ? iconosViento[direccion.trim().toUpperCase()] 
         : null;
-    
     return (
         <article className="card">
             <h2 className="hora">

@@ -7,6 +7,7 @@ import PrecipitacionCard from "./PrecipitacionCard";
 import EstadoCieloCard from "./EstadoCieloCard";
 import TemperaturaCard from "./TemperaturaCard";
 import VientoCard from "./VientoCard";
+import HumedadCard from "./HumedadCard";
 import ApiError from "../UI/ApiError";
 import MetereologiaSkeleton from "../UI/metereologiaSkeleton";
 
@@ -14,7 +15,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import { FaChevronDown } from 'react-icons/fa';
-import { WiRaindrop, WiHot, WiWindy, WiSunrise } from "react-icons/wi";
+import { WiRaindrop, WiHot, WiWindy, WiSunrise, WiHumidity } from "react-icons/wi";
 import { formatearFechaSinHora } from "../../utils/DataFormat";
 
 
@@ -60,13 +61,21 @@ const comprobarExistenciaDatos = (data, tipo) => {
         viento.velocidad != undefined && viento.velocidad != "" &&
         viento.periodo != undefined && viento.periodo != "");
 
+    const tieneHumedad = tipo == "horaria" ? data.humedadRelativa?.some(hum =>
+        hum.value != undefined && hum.value != "" &&
+        hum.periodo != undefined && hum.periodo != ""
+    ) : data.humedadRelativa?.dato?.length > 0 ? data.humedadRelativa?.dato?.some(temp =>
+        temp.value != undefined && temp.value != "" &&
+        temp.hora != undefined && temp.hora != "") : false;
+
     return {
         tieneDatosPrecipitacion: tieneDatosPrecipitacion,
         tieneProbPrecipitacionHoraria: tieneProbPrecipitacionHoraria,
         tieneProbTormenta: tieneProbTormenta,
         tieneEstadoCielo: tieneEstadoCielo,
         tieneTemperatura: tieneTemperatura,
-        tieneViento: tieneViento
+        tieneViento: tieneViento,
+        tieneHumedad: tieneHumedad
     }
 }
 
@@ -110,7 +119,7 @@ const Metereologia = ({ dataFetch }) => {
 
                 console.log("horaria: ", dHoraria);
                 console.log("diaria: ", dDiaria);
-                setDataMetereologia(dHoraria.data[0]);
+                setDataMetereologia(dDiaria.data[0]);
             }
 
         }
@@ -147,7 +156,8 @@ const Metereologia = ({ dataFetch }) => {
                                 tieneProbTormenta,
                                 tieneEstadoCielo,
                                 tieneTemperatura,
-                                tieneViento
+                                tieneViento,
+                                tieneHumedad
                             } = comprobarExistenciaDatos(item, dataFetch?.tipo);
 
                             if (!tieneDatosPrecipitacion) return null;
@@ -361,44 +371,6 @@ const Metereologia = ({ dataFetch }) => {
                                                     <WiWindy className="estiloIconoAcordeon" />Viento
                                                 </div>
                                             </AccordionSummary>
-
-
-                                            {/* <AccordionDetails sx={{
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                flexWrap: 'wrap',
-                                                gap: '10px',
-                                                justifyContent: 'flex-start'
-                                            }}>
-                                                <div className="contenedorCards">
-                                                    {dataFetch && dataFetch.tipo == "horaria" ? item.vientoAndRachaMax.map((itemViento, idxViento) =>
-                                                        itemViento.direccion[0] && itemViento.velocidad[0] && itemViento.periodo &&
-                                                            itemViento.direccion[0] != "" && itemViento.velocidad[0] != "" && itemViento.periodo != "" ?
-
-                                                            (
-                                                                <VientoCard
-                                                                    key={idxViento}
-                                                                    direccion={itemViento.direccion[0]}
-                                                                    periodo={itemViento.periodo}
-                                                                    velocidad={itemViento.velocidad[0]}
-                                                                />
-                                                            ) : ""
-
-                                                    ) :
-
-
-                                                        item.viento.map((itemViento, idxViento) =>
-                                                            itemViento.direccion != "" && itemViento.velocidad != "" ?
-                                                                (
-                                                                    <TemperaturaCard
-                                                                        key={idxViento}
-                                                                        direccion={itemViento.direccion}
-                                                                        periodo={itemViento.periodo}
-                                                                        velocidad={itemViento.velocidad}
-                                                                    />
-                                                                ) : "")}
-                                                </div>
-                                            </AccordionDetails> */}
                                             <AccordionDetails sx={{
                                                 display: 'flex',
                                                 flexDirection: 'column',
@@ -440,6 +412,56 @@ const Metereologia = ({ dataFetch }) => {
                                             </AccordionDetails>
                                         </Accordion>)
                                         : ""}
+                                    {tieneHumedad && (<Accordion>
+                                        <AccordionSummary sx={{
+                                            backgroundColor: '#0d47a1',
+                                            borderRadius: '10px',
+                                            marginTop: '5px',
+                                            color: '#ffffff',
+                                            '&:hover': {
+                                                backgroundColor: '#1565c0',
+                                            },
+                                            '& .MuiAccordionSummary-expandIconWrapper': {
+                                                color: '#ffffff',
+                                                fontSize: '1.5rem',
+                                            }
+                                        }}
+                                            expandIcon={<FaChevronDown />}
+                                            aria-controls="panel1-content"
+                                        >
+                                            <div className="tituloAcordeon">
+                                                <WiHumidity className="estiloIconoAcordeon" />Humedad Relativa
+                                            </div>
+                                        </AccordionSummary>
+                                        <AccordionDetails sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            flexWrap: 'wrap',
+                                            gap: '10px',
+                                            justifyContent: 'flex-start'
+                                        }}>
+                                            <div className="contenedorCards">
+                                                {dataFetch && dataFetch.tipo == "horaria" ? item.humedadRelativa?.map((itemHumedad, idxHumedad) =>
+                                                    itemHumedad.periodo != "" && itemHumedad.value != "" &&
+                                                    (<HumedadCard
+                                                        key={idxHumedad}
+                                                        value={itemHumedad.value}
+                                                        periodo={itemHumedad.periodo}
+                                                    />
+                                                    )) : item.humedadRelativa?.dato?.map((itemHumedad, idxHumedad) =>
+                                                        itemHumedad.hora != "" && itemHumedad.value != "" && (
+                                                            <HumedadCard
+                                                                key={idxHumedad}
+                                                                value={itemHumedad.value}
+                                                                periodo={itemHumedad.hora}
+
+                                                            />
+                                                        ))}
+                                            </div>
+                                        </AccordionDetails>
+                                    </Accordion>)}
+
+
                                 </fieldset>
                             );
                         })}
