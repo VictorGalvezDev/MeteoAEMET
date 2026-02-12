@@ -83,90 +83,19 @@ const comprobarExistenciaDatos = (data, tipo) => {
 
 const Metereologia = ({ dataFetch }) => {
     const [errorData, setErrorData] = useState({});
-    const [dataMetereologia, setDataMetereologia] = useState(null);
+    const [dataMetereologiaHoraria, setDataMetereologiaHoraria] = useState(null);
+    const [dataMetereologiaDiaria, setDataMetereologiaDiaria] = useState(null);
     const [isErrorData, setIsErrorData] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [validaciones, setValidaciones] = useState({});
-
-    // UseEffect para desarrollo
-    // useEffect(() => {
-    //     const aemetFetch = async () => {
-    //         if (!dataFetch) return;
-    //         setValidaciones({});
-    //         setDataMetereologia(null);
-    //         setIsErrorData(false);
-    //         setIsLoading(true);
-
-    //         try {
-    //             if (dataFetch.tipo === "horaria") {
-    //                 const validacionesPorDia = {};
-    //                 dHoraria.data[0].prediccion.dia.forEach((item, index) => {
-    //                     validacionesPorDia[index] = comprobarExistenciaDatos(item, dataFetch.tipo);
-    //                 });
-    //                 setValidaciones(validacionesPorDia);
-    //                 setDataMetereologia(dHoraria.data[0]);
-    //             } else {
-    //                 const validacionesPorDia = {};
-    //                 dDiaria.data[0].prediccion.dia.forEach((item, index) => {
-    //                     validacionesPorDia[index] = comprobarExistenciaDatos(item, dataFetch.tipo);
-    //                 });
-    //                 setValidaciones(validacionesPorDia);
-    //                 setDataMetereologia(dDiaria.data[0]);
-    //             }
-    //         } catch (err) {
-    //             setErrorData({
-    //                 status: err.status || 500,
-    //                 message: 'Hubo un fallo en la API de aemet'
-    //             });
-    //             setIsErrorData(true);
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     }
-    //     aemetFetch();
-    // }, [dataFetch]);
-
-
-
-
-    // useEffect(() => {
-    //     const aemetFetch = async () => {
-    //         try {
-    //         setIsLoading(true);
-    //         setIsErrorData(false)
-    //         setDataMetereologia(null)
-    //             if (dataFetch.tipo && dataFetch.provincia && dataFetch.municipio) {   
-    //                 const res = await fetch(`${URL_API}/api/aemet?tipo=${dataFetch.tipo}&prov=${dataFetch.provincia}&mun=${dataFetch.municipio}`);
-    //                 if (!res.ok) {
-    //                     setErrorData(res.json());
-    //                     isErrorData(true);
-    //                 }
-    //                 const data = await res.json();
-    //                 console.log("Datos AEMET recibidos:", data);
-    //                 const validacionesPorDia = {};
-    //                 data.data[0].prediccion.dia.forEach((item, index) => {
-    //                     validacionesPorDia[index] = comprobarExistenciaDatos(item, dataFetch.tipo);
-    //                 });
-    //             }
-    //         } catch (err) {
-    //          setErrorData({
-    //                 status: err.status || 500,
-    //                 message:'Hubo un fallo en la API de aemet'
-    //             });
-    //             setIsErrorData(true);
-    //         } finally {
-    //             setIsLoading(false)    
-    //         }
-    //     }
-    //     aemetFetch();
-    // }, [dataFetch]);
 
     useEffect(() => {
         const aemetFetch = async () => {
             try {
                 setIsLoading(true);
                 setIsErrorData(false);
-                setDataMetereologia(null);
+                setDataMetereologiaDiaria(null);
+                setDataMetereologiaHoraria(null);
                 setValidaciones({});
 
                 if (dataFetch?.tipo && dataFetch?.provincia && dataFetch?.municipio) {
@@ -190,7 +119,8 @@ const Metereologia = ({ dataFetch }) => {
                         });
 
                         setValidaciones(validacionesPorDia);
-                        setDataMetereologia(data.data[0]);
+                        dataFetch.tipo == "horaria" ? setDataMetereologiaHoraria(data.data[0]) : setDataMetereologiaDiaria(data.data[0])
+
                     } else {
                         throw new Error("Estructura de datos incorrecta");
                     }
@@ -220,19 +150,19 @@ const Metereologia = ({ dataFetch }) => {
                 </div>
             ) : isErrorData ? (
                 <ApiError errorData={errorData} />
-            ) : dataMetereologia && (
+            ) : dataMetereologiaHoraria && dataFetch.tipo == "horaria" ? (
                 <div>
                     <section>
                         <Cabecera
-                            nombre={dataMetereologia.nombre}
-                            provincia={dataMetereologia.provincia}
-                            elaborado={dataMetereologia.elaborado}
-                            web={dataMetereologia.origen.web}
+                            nombre={dataMetereologiaHoraria.nombre}
+                            provincia={dataMetereologiaHoraria.provincia}
+                            elaborado={dataMetereologiaHoraria.elaborado}
+                            web={dataMetereologiaHoraria.origen.web}
                             tipo={dataFetch?.tipo || 'invalido'}
                         />
                     </section>
                     <section>
-                        {dataMetereologia.prediccion.dia.map(item => {
+                        {dataMetereologiaHoraria.prediccion.dia.map(item => {
                             const validacion = validaciones[item.fecha] || {};
 
 
@@ -240,21 +170,6 @@ const Metereologia = ({ dataFetch }) => {
                             if (!tieneAlgunDato) {
                                 return null;
                             }
-
-
-
-                            // if (!tieneAlgunDato) {
-                            //     return "";
-                            // }
-                            // const {
-                            //     tieneDatosPrecipitacion,
-                            //     tieneProbPrecipitacionHoraria,
-                            //     tieneProbTormenta,
-                            //     tieneEstadoCielo,
-                            //     tieneTemperatura,
-                            //     tieneViento,
-                            //     tieneHumedad
-                            // } = comprobarExistenciaDatos(item, dataFetch?.tipo);
 
                             return (
                                 <fieldset key={item.fecha}>
@@ -290,10 +205,28 @@ const Metereologia = ({ dataFetch }) => {
                                                 gap: '10px',
                                                 justifyContent: 'flex-start'
                                             }}>
-                                                {dataFetch && dataFetch.tipo === "horaria" ? (
-                                                    <>
-                                                        <div className="contenedorCards">
-                                                            {item.precipitacion?.filter(filPrecip =>
+                                                <>
+                                                    <div className="contenedorCards">
+                                                        {item.precipitacion?.filter(filPrecip =>
+                                                            filPrecip.value != undefined &&
+                                                            filPrecip.periodo != undefined &&
+                                                            filPrecip.value != "" &&
+                                                            filPrecip.periodo != "").map((itemPrecipitacion, idxPrecipitacion) =>
+                                                            (<PrecipitacionCard
+                                                                key={idxPrecipitacion}
+                                                                value={itemPrecipitacion.value}
+                                                                periodo={itemPrecipitacion.periodo}
+                                                                tipo={dataFetch.tipo}
+                                                                tipoCard={"precipitacion"}
+                                                            />)
+                                                            )}
+                                                    </div>
+
+
+                                                    {validacion.tieneProbPrecipitacionHoraria && (
+                                                        <fieldset className="contenedorCards">
+                                                            <legend className="tituloFiledCards">Probabilidad de Precipitación</legend>
+                                                            {item.probPrecipitacion.filter(filPrecip =>
                                                                 filPrecip.value != undefined &&
                                                                 filPrecip.periodo != undefined &&
                                                                 filPrecip.value != "" &&
@@ -303,50 +236,305 @@ const Metereologia = ({ dataFetch }) => {
                                                                     value={itemPrecipitacion.value}
                                                                     periodo={itemPrecipitacion.periodo}
                                                                     tipo={dataFetch.tipo}
-                                                                    tipoCard={"precipitacion"}
-                                                                />)
-                                                                )}
-                                                        </div>
+                                                                    tipoCard={"probPrecipitacion"}
+                                                                />
+                                                                ))}
+                                                        </fieldset>
+                                                    )}
 
-                                                        {validacion.tieneProbPrecipitacionHoraria && (
-                                                            <fieldset className="contenedorCards">
-                                                                <legend className="tituloFiledCards">Probabilidad de Precipitación</legend>
-                                                                {item.probPrecipitacion.filter(filPrecip =>
-                                                                    filPrecip.value != undefined &&
-                                                                    filPrecip.periodo != undefined &&
-                                                                    filPrecip.value != "" &&
-                                                                    filPrecip.periodo != "").map((itemPrecipitacion, idxPrecipitacion) =>
-                                                                    (<PrecipitacionCard
-                                                                        key={idxPrecipitacion}
-                                                                        value={itemPrecipitacion.value}
-                                                                        periodo={itemPrecipitacion.periodo}
-                                                                        tipo={dataFetch.tipo}
-                                                                        tipoCard={"probPrecipitacion"}
-                                                                    />
-                                                                    ))}
-                                                            </fieldset>
-                                                        )}
+                                                    {validacion.tieneProbTormenta && (
+                                                        <fieldset className="contenedorCards">
+                                                            <legend className="tituloFiledCards">Probabilidad de Tormenta</legend>
+                                                            {item.probTormenta.filter(filPrecip =>
+                                                                filPrecip.value != undefined &&
+                                                                filPrecip.periodo != undefined &&
+                                                                filPrecip.value != "" &&
+                                                                filPrecip.periodo != "").map((itemPrecipitacion, idxPrecipitacion) =>
+                                                                (<PrecipitacionCard
+                                                                    key={idxPrecipitacion}
+                                                                    value={itemPrecipitacion.value}
+                                                                    periodo={itemPrecipitacion.periodo}
+                                                                    tipo={dataFetch.tipo}
+                                                                    tipoCard={"probTormenta"}
+                                                                />
+                                                                ))}
+                                                        </fieldset>
+                                                    )}
+                                                </>
+                                            </AccordionDetails>
+                                        </Accordion>)}
 
-                                                        {validacion.tieneProbTormenta && (
-                                                            <fieldset className="contenedorCards">
-                                                                <legend className="tituloFiledCards">Probabilidad de Tormenta</legend>
-                                                                {item.probTormenta.filter(filPrecip =>
-                                                                    filPrecip.value != undefined &&
-                                                                    filPrecip.periodo != undefined &&
-                                                                    filPrecip.value != "" &&
-                                                                    filPrecip.periodo != "").map((itemPrecipitacion, idxPrecipitacion) =>
-                                                                    (<PrecipitacionCard
-                                                                        key={idxPrecipitacion}
-                                                                        value={itemPrecipitacion.value}
-                                                                        periodo={itemPrecipitacion.periodo}
-                                                                        tipo={dataFetch.tipo}
-                                                                        tipoCard={"probTormenta"}
-                                                                    />
-                                                                    ))}
-                                                            </fieldset>
-                                                        )}
-                                                    </>
-                                                ) : (
+
+                                    {/* estadoCielo */}
+                                    {validacion.tieneEstadoCielo && (
+                                        <Accordion>
+                                            <AccordionSummary sx={{
+                                                backgroundColor: '#0d47a1',
+                                                borderRadius: '10px',
+                                                marginTop: '5px',
+                                                color: '#ffffff',
+                                                '&:hover': {
+                                                    backgroundColor: '#1565c0',
+                                                },
+                                                '& .MuiAccordionSummary-expandIconWrapper': {
+                                                    color: '#ffffff',
+                                                    fontSize: '1.5rem',
+                                                }
+                                            }}
+                                                expandIcon={<FaChevronDown />}
+                                                aria-controls="panel1-content"
+                                            >
+                                                <div className="tituloAcordeon">
+                                                    <WiSunrise className="estiloIconoAcordeon" />Estado Cielo
+                                                </div>
+                                            </AccordionSummary>
+                                            <AccordionDetails sx={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                flexWrap: 'wrap',
+                                                gap: '10px',
+                                                justifyContent: 'flex-start'
+                                            }}>
+                                                <div className="contenedorCards">
+                                                    {item.estadoCielo?.filter(filEstad =>
+                                                        filEstad.value != undefined &&
+                                                        filEstad.periodo != undefined &&
+                                                        filEstad.descripcion != undefined &&
+                                                        filEstad.value != "" &&
+                                                        filEstad.periodo != "" &&
+                                                        filEstad.descripcion != ""
+                                                    ).map((itemEstadoCielo, idxEstadoCielo) =>
+                                                    (<EstadoCieloCard
+                                                        key={idxEstadoCielo}
+                                                        value={itemEstadoCielo.value}
+                                                        periodo={itemEstadoCielo.periodo}
+                                                        descripcion={itemEstadoCielo.descripcion}
+                                                    />
+                                                    ))}
+                                                </div>
+                                            </AccordionDetails>
+                                        </Accordion>
+                                    )}
+
+                                    {/* temperatura */}
+                                    {validacion.tieneTemperatura &&
+                                        (<Accordion>
+                                            <AccordionSummary sx={{
+                                                backgroundColor: '#0d47a1',
+                                                borderRadius: '10px',
+                                                marginTop: '5px',
+                                                color: '#ffffff',
+                                                '&:hover': {
+                                                    backgroundColor: '#1565c0',
+                                                },
+                                                '& .MuiAccordionSummary-expandIconWrapper': {
+                                                    color: '#ffffff',
+                                                    fontSize: '1.5rem',
+                                                }
+                                            }}
+                                                expandIcon={<FaChevronDown />}
+                                                aria-controls="panel1-content"
+                                            >
+                                                <div className="tituloAcordeon">
+                                                    <WiHot className="estiloIconoAcordeon" />Temperatura
+                                                </div>
+                                            </AccordionSummary>
+                                            <AccordionDetails sx={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                flexWrap: 'wrap',
+                                                gap: '10px',
+                                                justifyContent: 'flex-start'
+                                            }}>
+                                                <div className="contenedorCards">
+                                                    {item.temperatura?.filter(
+                                                        filTemp =>
+                                                            filTemp.value != undefined &&
+                                                            filTemp.periodo != undefined &&
+                                                            filTemp.value != "" &&
+                                                            filTemp.periodo != "").map((itemTemperatura, idxTemperatura) => (
+                                                                <TemperaturaCard
+                                                                    key={idxTemperatura}
+                                                                    value={itemTemperatura.value}
+                                                                    periodo={itemTemperatura.periodo}
+                                                                />
+                                                            ))}
+                                                </div>
+                                            </AccordionDetails>
+                                        </Accordion>)}
+
+
+                                    {/* viento */}
+                                    {validacion.tieneViento &&
+                                        (<Accordion>
+                                            <AccordionSummary sx={{
+                                                backgroundColor: '#0d47a1',
+                                                borderRadius: '10px',
+                                                marginTop: '5px',
+                                                color: '#ffffff',
+                                                '&:hover': {
+                                                    backgroundColor: '#1565c0',
+                                                },
+                                                '& .MuiAccordionSummary-expandIconWrapper': {
+                                                    color: '#ffffff',
+                                                    fontSize: '1.5rem',
+                                                }
+                                            }}
+                                                expandIcon={<FaChevronDown />}
+                                                aria-controls="panel1-content"
+                                            >
+                                                <div className="tituloAcordeon">
+                                                    <WiWindy className="estiloIconoAcordeon" />Viento
+                                                </div>
+                                            </AccordionSummary>
+                                            <AccordionDetails sx={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                flexWrap: 'wrap',
+                                                gap: '10px',
+                                                justifyContent: 'flex-start'
+                                            }}>
+                                                <div className="contenedorCards">
+                                                    {
+                                                        item.vientoAndRachaMax?.filter(itemViento =>
+                                                            itemViento.direccion?.[0] != undefined &&
+                                                            itemViento.velocidad?.[0] != undefined &&
+                                                            itemViento.periodo != undefined &&
+                                                            itemViento.direccion?.[0] != "" &&
+                                                            itemViento.velocidad?.[0] != "" &&
+                                                            itemViento.periodo != ""
+                                                        ).map((itemViento, idxViento) =>
+                                                        (<VientoCard
+                                                            key={idxViento}
+                                                            direccion={itemViento.direccion[0]}
+                                                            periodo={itemViento.periodo}
+                                                            velocidad={itemViento.velocidad[0]}
+                                                        />))}
+                                                </div>
+                                            </AccordionDetails>
+                                        </Accordion>)}
+
+                                    {/* Humedad */}
+                                    {validacion.tieneHumedad && (<Accordion>
+                                        <AccordionSummary sx={{
+                                            backgroundColor: '#0d47a1',
+                                            borderRadius: '10px',
+                                            marginTop: '5px',
+                                            color: '#ffffff',
+                                            '&:hover': {
+                                                backgroundColor: '#1565c0',
+                                            },
+                                            '& .MuiAccordionSummary-expandIconWrapper': {
+                                                color: '#ffffff',
+                                                fontSize: '1.5rem',
+                                            }
+                                        }}
+                                            expandIcon={<FaChevronDown />}
+                                            aria-controls="panel1-content"
+                                        >
+                                            <div className="tituloAcordeon">
+                                                <WiHumidity className="estiloIconoAcordeon" />Humedad Relativa
+                                            </div>
+                                        </AccordionSummary>
+                                        <AccordionDetails sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            flexWrap: 'wrap',
+                                            gap: '10px',
+                                            justifyContent: 'flex-start'
+                                        }}>
+                                            <div className="contenedorCards">
+                                                {
+                                                    item.humedadRelativa?.filter(filHumedad =>
+                                                        filHumedad.periodo != undefined &&
+                                                        filHumedad.value != undefined &&
+                                                        filHumedad.periodo != "" &&
+                                                        filHumedad.value != ""
+                                                    ).map((itemHumedad, idxHumedad) =>
+
+                                                    (<HumedadCard
+                                                        key={idxHumedad}
+                                                        value={itemHumedad.value}
+                                                        periodo={itemHumedad.periodo}
+                                                    />
+                                                    ))}
+                                            </div>
+                                        </AccordionDetails>
+                                    </Accordion>)}
+                                </fieldset>
+                            );
+                        })}
+                    </section>
+                </div >
+            ) :
+
+
+
+
+
+
+
+
+
+
+                dataMetereologiaDiaria && dataFetch.tipo == "diaria" &&
+
+
+                (<div>
+                    <section>
+                        <Cabecera
+                            nombre={dataMetereologiaDiaria.nombre}
+                            provincia={dataMetereologiaDiaria.provincia}
+                            elaborado={dataMetereologiaDiaria.elaborado}
+                            web={dataMetereologiaDiaria.origen.web}
+                            tipo={dataFetch?.tipo || 'invalido'}
+                        />
+                    </section>
+                    <section>
+                        {dataMetereologiaDiaria.prediccion.dia.map(item => {
+                            const validacion = validaciones[item.fecha] || {};
+
+
+                            const tieneAlgunDato = Object.values(validacion).some(v => v === true);
+                            if (!tieneAlgunDato) {
+                                return null;
+                            }
+
+                            return (
+                                <fieldset key={item.fecha}>
+                                    <legend><h1>{formatearFechaSinHora(item.fecha)}</h1></legend>
+
+                                    {/* Precipitacion */}
+                                    {validacion.tieneDatosPrecipitacion &&
+                                        (<Accordion>
+                                            <AccordionSummary sx={{
+                                                backgroundColor: '#0d47a1',
+                                                borderRadius: '10px',
+                                                marginTop: '5px',
+                                                color: '#ffffff',
+                                                '&:hover': {
+                                                    backgroundColor: '#1565c0',
+                                                },
+                                                '& .MuiAccordionSummary-expandIconWrapper': {
+                                                    color: '#ffffff',
+                                                    fontSize: '1.5rem',
+                                                }
+                                            }}
+                                                expandIcon={<FaChevronDown />}
+                                                aria-controls="panel1-content"
+                                            >
+                                                <div className="tituloAcordeon">
+                                                    <WiRaindrop className="estiloIconoAcordeon" />Precipitaciones
+                                                </div>
+                                            </AccordionSummary>
+                                            <AccordionDetails sx={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                flexWrap: 'wrap',
+                                                gap: '10px',
+                                                justifyContent: 'flex-start'
+                                            }}>
+                                                {(
                                                     <div className="contenedorCards">
                                                         {item.probPrecipitacion
                                                             ?.filter(filPrecip =>
@@ -449,19 +637,7 @@ const Metereologia = ({ dataFetch }) => {
                                                 justifyContent: 'flex-start'
                                             }}>
                                                 <div className="contenedorCards">
-                                                    {dataFetch && dataFetch.tipo == "horaria" ?
-                                                        item.temperatura?.filter(
-                                                            filTemp =>
-                                                                filTemp.value != undefined &&
-                                                                filTemp.periodo != undefined &&
-                                                                filTemp.value != "" &&
-                                                                filTemp.periodo != "").map((itemTemperatura, idxTemperatura) => (
-                                                                    <TemperaturaCard
-                                                                        key={idxTemperatura}
-                                                                        value={itemTemperatura.value}
-                                                                        periodo={itemTemperatura.periodo}
-                                                                    />
-                                                                )) :
+                                                    {
                                                         item.temperatura?.dato?.filter(
                                                             filTemp =>
                                                                 filTemp.value != undefined &&
@@ -510,21 +686,7 @@ const Metereologia = ({ dataFetch }) => {
                                                 justifyContent: 'flex-start'
                                             }}>
                                                 <div className="contenedorCards">
-                                                    {dataFetch && dataFetch.tipo == "horaria" ?
-                                                        item.vientoAndRachaMax?.filter(itemViento =>
-                                                            itemViento.direccion?.[0] != undefined &&
-                                                            itemViento.velocidad?.[0] != undefined &&
-                                                            itemViento.periodo != undefined &&
-                                                            itemViento.direccion?.[0] != "" &&
-                                                            itemViento.velocidad?.[0] != "" &&
-                                                            itemViento.periodo != ""
-                                                        ).map((itemViento, idxViento) =>
-                                                        (<VientoCard
-                                                            key={idxViento}
-                                                            direccion={itemViento.direccion[0]}
-                                                            periodo={itemViento.periodo}
-                                                            velocidad={itemViento.velocidad[0]}
-                                                        />)) :
+                                                    {
                                                         item.viento?.filter(filViento =>
                                                             filViento.direccion != undefined &&
                                                             filViento.velocidad != undefined &&
@@ -573,19 +735,7 @@ const Metereologia = ({ dataFetch }) => {
                                             justifyContent: 'flex-start'
                                         }}>
                                             <div className="contenedorCards">
-                                                {dataFetch && dataFetch.tipo == "horaria" ? item.humedadRelativa?.filter(filHumedad =>
-                                                    filHumedad.periodo != undefined &&
-                                                    filHumedad.value != undefined &&
-                                                    filHumedad.periodo != "" &&
-                                                    filHumedad.value != ""
-                                                ).map((itemHumedad, idxHumedad) =>
-
-                                                (<HumedadCard
-                                                    key={idxHumedad}
-                                                    value={itemHumedad.value}
-                                                    periodo={itemHumedad.periodo}
-                                                />
-                                                )) : item.humedadRelativa?.dato?.filter(filHumedad =>
+                                                {item.humedadRelativa?.dato?.filter(filHumedad =>
                                                     filHumedad.value != undefined &&
                                                     filHumedad.hora != undefined &&
                                                     filHumedad.value != "" &&
@@ -604,8 +754,15 @@ const Metereologia = ({ dataFetch }) => {
                             );
                         })}
                     </section>
-                </div >
-            )}
+                </div >)
+
+
+
+
+
+
+
+            }
         </>
     )
 }
