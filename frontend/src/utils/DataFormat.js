@@ -29,7 +29,7 @@ export const formatearFechaSinHora = (fechaSinFormateo) => {
 }
 
 
-export const formatearHoraDosCuatroDigitos = (periodo) => {
+export const formatearHoraGeneral = (periodo) => {
     try {
         if (!periodo) return "Hora no disponible";
         

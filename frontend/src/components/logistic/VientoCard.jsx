@@ -1,5 +1,5 @@
 import React from "react"
-import { formatearHoraDosCuatroDigitos } from "../../utils/DataFormat";
+import { formatearHoraGeneral } from "../../utils/DataFormat";
 import { BsArrowLeft, BsArrowUp, BsArrowDown, BsArrowRight,BsArrowUpLeft, BsArrowUpRight, BsArrowDownLeft, BsArrowDownRight  } from "react-icons/bs";
 
 const iconosViento = {
@@ -20,7 +20,7 @@ const VientoCard = ({direccion, periodo, velocidad}) => {
     return (
         <article className="card">
             <h2 className="hora">
-                {formatearHoraDosCuatroDigitos(periodo)}
+                {formatearHoraGeneral(periodo)}
             </h2>
             <div className="iconoViento">
                 {IconoComponente 

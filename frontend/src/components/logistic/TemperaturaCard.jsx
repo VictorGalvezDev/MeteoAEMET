@@ -1,5 +1,5 @@
 import React from "react";
-import { formatearHoraDosCuatroDigitos } from "../../utils/DataFormat";
+import { formatearHoraGeneral } from "../../utils/DataFormat";
 import { WiThermometer } from "weather-icons-react";
 
 
@@ -28,7 +28,7 @@ const TemperaturaCard = ({ value, periodo }) => {
     return (
         <article className="card">
             <h2 className="hora">
-                {formatearHoraDosCuatroDigitos(periodo)}
+                {formatearHoraGeneral(periodo)}
             </h2>
             <div className="iconoTemp">
                 <WiThermometer color={color} />

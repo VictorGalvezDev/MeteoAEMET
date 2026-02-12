@@ -1,11 +1,11 @@
 import React from "react"
-import { formatearHoraDosCuatroDigitos } from "../../utils/DataFormat"
+import { formatearHoraGeneral } from "../../utils/DataFormat"
 
 const HumedadCard = ({periodo, value}) => { 
     return (
             <article className="card">
                 <h2 className="hora">
-                    {formatearHoraDosCuatroDigitos(periodo)}
+                    {formatearHoraGeneral(periodo)}
                 </h2>
                 <p className="valor">{value}%</p>
             </article>

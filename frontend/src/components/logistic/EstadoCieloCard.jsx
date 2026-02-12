@@ -1,5 +1,5 @@
 import React from "react";
-import { formatearHoraDosCuatroDigitos } from "../../utils/DataFormat";
+import { formatearHoraGeneral } from "../../utils/DataFormat";
 import { 
     WiDaySunny, WiNightClear, WiDayCloudy, WiNightAltCloudy, 
     WiCloud, WiCloudy, WiDayStormShowers, WiNightAltSleetStorm 
@@ -58,7 +58,7 @@ const EstadoCieloCard = ({ value, periodo, descripcion }) => {
     return (
         <article className="card">
             <h2 className="hora">
-                {formatearHoraDosCuatroDigitos(periodo)}
+                {formatearHoraGeneral(periodo)}
             </h2>
             <div className="icono">
                 {IconoComponente ? (
