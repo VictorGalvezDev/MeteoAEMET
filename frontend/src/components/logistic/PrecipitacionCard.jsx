@@ -1,5 +1,5 @@
 import React from "react";
-import { formatearHoraDosCuatroDigitos, formatearHoraConGuion } from "../../utils/DataFormat";
+import { formatearHoraDosCuatroDigitos } from "../../utils/DataFormat";
 import { WiRain, WiDayRain, WiNightAltRain, WiDaySunny, WiNightClear, WiRainMix, WiThunderstorm, WiStormShowers, WiCloud } from "weather-icons-react";
 
 const obtenerIconoClima = (periodo, valor, tipo, tipoCard) => {
@@ -75,7 +75,7 @@ const PrecipitacionCard = ({ value, periodo, tipo, tipoCard = "" }) => {
     return (
         <article className="card">
             <h2 className="hora">
-                {tipo == "horaria" ? formatearHoraDosCuatroDigitos(periodo) : formatearHoraConGuion(periodo)}
+                {formatearHoraDosCuatroDigitos(periodo)}
             </h2>
             <div className="icono">
                 <IconoComponente size={48} color={color} />

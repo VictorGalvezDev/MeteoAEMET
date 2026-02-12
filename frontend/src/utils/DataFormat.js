@@ -51,8 +51,8 @@ export const formatearHoraDosCuatroDigitos = (periodo) => {
         
         // Periodo de 4
         if (periodoStr.length == 4) {
-            const primeraHora = parseInt(periodoStr.slice(0, 2)); // Primeros 2 dígitos
-            const segundaHora = parseInt(periodoStr.slice(2));    // Últimos 2 dígitos
+            const primeraHora = parseInt(periodoStr.slice(0, 2));
+            const segundaHora = parseInt(periodoStr.slice(2));
             
             if (isNaN(primeraHora) || isNaN(segundaHora) || 
                 primeraHora < 0 || primeraHora > 24 || 
@@ -78,12 +78,4 @@ export const formatearHoraDosCuatroDigitos = (periodo) => {
     } catch {
         return "Hora no disponible";
     }
-}
-
-
-
-export const formatearHoraConGuion = (hora) => {
-    return formatearHoraDosCuatroDigitos(hora.split("-")[0]) +
-        "-" +
-        formatearHoraDosCuatroDigitos(hora.split("-")[1])
 }
