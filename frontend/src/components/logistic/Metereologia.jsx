@@ -1,24 +1,9 @@
 import React, { useEffect, useState } from "react"
 import "./css/Metereologia.css"
-// import dHoraria from "../../../horaria.json"
-// import dDiaria from "../../../diaria.json"
-// import Cabecera from "./Cabecera";
-// import PrecipitacionCard from "./PrecipitacionCard";
-// import EstadoCieloCard from "./EstadoCieloCard";
-// import TemperaturaCard from "./TemperaturaCard";
-// import VientoCard from "./VientoCard";
-// import HumedadCard from "./HumedadCard";
 import ApiError from "../UI/ApiError";
 import MetereologiaSkeleton from "../UI/metereologiaSkeleton";
 import DataHoraria from "./DataHoraria";
 import DataDiaria from "./DataDiaria";
-
-// import Accordion from '@mui/material/Accordion';
-// import AccordionSummary from '@mui/material/AccordionSummary';
-// import AccordionDetails from '@mui/material/AccordionDetails';
-// import { FaChevronDown } from 'react-icons/fa';
-// import { WiRaindrop, WiHot, WiWindy, WiSunrise, WiHumidity } from "react-icons/wi";
-// import { formatearFechaSinHora } from "../../utils/DataFormat";
 
 
 const URL_API = import.meta.env.VITE_API_URL;
@@ -96,9 +81,6 @@ const Metereologia = ({ dataFetch }) => {
             try {
                 setIsLoading(true);
                 setIsErrorData(false);
-                setDataMetereologiaDiaria(null);
-                setDataMetereologiaHoraria(null);
-                setValidaciones({});
 
                 if (dataFetch?.tipo && dataFetch?.provincia && dataFetch?.municipio) {
                     const res = await fetch(`${URL_API}/api/aemet?tipo=${dataFetch.tipo}&prov=${dataFetch.provincia}&mun=${dataFetch.municipio}`);
@@ -111,7 +93,6 @@ const Metereologia = ({ dataFetch }) => {
                     }
 
                     const data = await res.json();
-                    console.log("Datos AEMET recibidos:", data);
 
                     if (data?.data?.[0]?.prediccion?.dia) {
                         const validacionesPorDia = {};
