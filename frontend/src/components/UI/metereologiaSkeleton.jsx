@@ -1,5 +1,5 @@
 import React from "react";
-import "./css/MetereologiaSkeleton.css";
+import "./css/metereologiaSkeleton.css";
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
