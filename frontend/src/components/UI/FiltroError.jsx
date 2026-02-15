@@ -1,4 +1,4 @@
-import "./css/filtroError.css";
+import "./css/FiltroError.css";
 import { MdOutlineEmail } from "react-icons/md";
 
 const FiltroError = ({ status, error, message }) => {
